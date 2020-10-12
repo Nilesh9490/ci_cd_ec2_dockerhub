@@ -1,0 +1,28 @@
+#Not Working
+image: docker:19.03.12
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+  DOCKER_TLS_CERTDIR: ""
+  LATEST_VER: nileshshastri09/node-php-chatserver:latest
+  MAJOR_VER: nileshshastri09/node-php-chatserver:1
+stages:
+  - Build image
+  - Push to Docker Hub
+
+docker build:
+  stage: Build image
+  script:
+  - docker info
+  - docker build -t $LATEST_VER -t $MAJOR_VER .
+
+docker push:
+  stage: Push to Docker Hub
+  only:
+  - master
+  script:
+  - echo "$REGISTRY_PASSWORD" | docker login -u "$REGISTRY_USER" --password-stdin
+  - docker push $LATEST_VER && docker image rm $LATEST_VER
+  - docker push $MAJOR_VER && docker image rm $MAJOR_VER

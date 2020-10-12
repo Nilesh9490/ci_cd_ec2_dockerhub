@@ -1,0 +1,15 @@
+version: "3"
+services:
+  web:
+    build: .
+    ports:
+      - 80:80
+      - 443:443
+      - 3421:3421
+    restart: always
+    volumes:
+      - /var/www/html/chatroom-app:/var/www/html
+    networks:
+      - webdbnet
+networks:
+  webdbnet:
